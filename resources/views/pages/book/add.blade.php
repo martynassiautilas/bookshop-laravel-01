@@ -1,30 +1,29 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="mx-auto max-w-lg mt-10">
+<div class="mx-auto mt-10">
     <div class="flex ">
         <div class="w-full">
 
             <header class="font-semibold font-heading text-gray-700 text-2xl text-center mb-10">
-                {{ __('auth.login') }}
+                Pridėti knygą
             </header>
-
 
             <section class="flex flex-col break-words bg-white border-1 rounded-md border shadow-md">
 
-                <form class="w-full px-6 space-y-6 sm:px-10 sm:space-y-8" method="POST" action="{{ route('login') }}">
+                <form class="w-full px-6 space-y-6 sm:px-10 sm:space-y-8" method="POST">
                     @csrf
 
                     <div class="flex flex-wrap">
-                        <label for="email" class="block text-gray-700 text-sm font-bold mb-2 sm:mb-4">
-                            {{ __('auth.email') }}
+                        <label for="name" class="block text-gray-700 text-sm font-bold mb-2 sm:mb-4">
+                            Knygos pavadinimas
                         </label>
 
-                        <input id="email" type="email"
-                            class="border p-2 rounded form-input w-full hover:border-gray-300 focus:border-gray-500 transition-primary @error('email') border-red-500 @enderror" name="email"
-                            value="{{ old('email') }}" required autocomplete="email" autofocus>
+                        <input id="name" type="name"
+                            class="border p-2 rounded form-input w-full hover:border-gray-300 focus:border-gray-500 transition-primary @error('name') border-red-500 @enderror" name="name"
+                            value="{{ old('name') }}">
 
-                        @error('email')
+                        @error('name')
                         <p class="text-red-500 text-xs italic mt-4">
                             {{ $message }}
                         </p>
