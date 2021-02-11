@@ -7,6 +7,13 @@ body {
     @apply text-gray-800 bg-gray-100;
 }
 
+a {
+    @apply text-primary-500 no-underline;
+    &:hover {
+        @apply underline;
+    }
+}
+
 .font-heading {
     font-family: 'Varela', sans-serif;
 }
@@ -43,4 +50,11 @@ strong, elem, .font-bold {
     }
 }
 
+.card {
+    @apply bg-white rounded-md p-5;
+}
 
+h1 {
+    @extend .font-heading;
+    @apply text-2xl;
+}
