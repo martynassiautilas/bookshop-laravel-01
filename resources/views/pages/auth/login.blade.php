@@ -7,12 +7,9 @@
             <h1>{{ __('auth.login') }}</h1>
         </div>
         <x-form.form action="{{ route('login') }}">
-            <x-form.input type="email" name="email" value="{{ old('email') }}" label="{{ __('auth.email') }}">
-            </x-form.input>
-            <x-form.input type="password" name="password" label="{{ __('auth.password') }}">
-            </x-form.input>
-            <x-form.checkbox checked="{{ old('remember') }}" name="remember" label="{{ __('auth.rememberme') }}" >
-            </x-form.checkbox>
+            <x-form.input type="email" name="email" value="{{ old('email') }}" label="{{ __('auth.email') }}"/>
+            <x-form.input type="password" name="password" label="{{ __('auth.password') }}"/>
+            <x-form.checkbox checked="{{ old('remember') }}" name="remember" label="{{ __('auth.rememberme') }}"/>
             <x-form.submit>{{ __('auth.login') }}</x-form.submit>
             @if (Route::has('password.request'))
                 <div class="text-center">

@@ -22,5 +22,7 @@ return [
     'forgotpassword' => 'Pamiršote slaptažodį?',
     'register' => 'Registracija',
     'donthaveanaccount' => 'Dar neesate narys(-ė)?',
-    'dateofbirth' => 'Gimimo data'
+    'alreadyhaveanaccount' => 'Jau esate narys(-ė)?',
+    'date_of_birth' => 'Gimimo data',
+    'name' => 'Vardas'
 ];
