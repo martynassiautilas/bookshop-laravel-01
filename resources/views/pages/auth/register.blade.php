@@ -8,12 +8,20 @@
         </div>
         <x-form.form action="{{ route('register') }}">
             <x-form.input type="text" name="name" value="{{ old('name') }}" label="{{ __('auth.name') }}"/>
+            
+            {{-- Reiktų tikslingiau sukurti date pickerio laukelį, kadangi jis nepatikimai atrodo :D --}}
             <x-form.input type="date" name="date_of_birth" value="{{ old('date_of_birth') }}" 
             label="{{ __('auth.date_of_birth') }}" 
             pattern="\d{4}-\d{2}-\d{2}"/>
+            
             <x-form.input type="email" name="email" value="{{ old('email') }}" label="{{ __('auth.email') }}"/>
+            
+            {{-- Čia trūksta show/hide password --}}
             <x-form.input type="password" name="password" label="{{ __('auth.password') }}"/>
-            <x-form.input type="password" name="password-confirmation" label="{{ __('auth.password') }}"/>
+            
+            {{-- Čia turi būti password confirmation laukelio pavadinimas --}}
+            <x-form.input type="password" name="password_confirmation" label="{{ __('auth.password') }}"/>
+            
             <x-form.submit>{{ __('auth.register') }}</x-form.submit>
             @if (Route::has('login'))
                 <div class="text-center">
