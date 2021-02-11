@@ -13,8 +13,9 @@ class AdminController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function homePage()
+    public function dashboard()
     {
-        return Auth::user()->isAdmin();
+        return 'sveiki';
+        // return Auth::user()->isAdmin();
     }
 }

@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AdminController;
 
-Route::get('/', [AdminController::class, 'homePage'])->name('homePage');
+Route::get('/', [AdminController::class, 'dashboard'])->name('dashboard');
 
 // Route::middleware(['auth'])->group(function () {
 //     Route::get('/add-book', [BookController::class, 'addBook'])->name('addBook');

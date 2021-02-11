@@ -1,5 +1,5 @@
 @extends('template.layout.base')
 
 @section('content')
-This is for admins
+Here will go some main status
 @endsection

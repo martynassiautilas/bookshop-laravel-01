@@ -39,6 +39,10 @@
                     x-transition:leave-start="opacity-100 scale-100"
                     x-transition:leave-end="opacity-0 scale-95" 
                     @click.away="dropdownOpen = false">
+                    @admin
+                        <a href="{{ route('admin.dashboard') }}"
+                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-500 hover:text-white">Admin</a>
+                    @endadmin
                     <a href="#"
                         class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-500 hover:text-white">Mano
                         profilis</a>
