@@ -1,85 +1,39 @@
-@extends('layouts.app')
+@extends('template.layout.base')
 
 @section('content')
-<div class="mx-auto max-w-lg mt-10">
-    <div class="flex ">
-        <div class="w-full">
-
-            <header class="font-semibold font-heading text-gray-700 text-2xl text-center mb-10">
-                {{ __('auth.login') }}
-            </header>
-
-
-            <section class="flex flex-col break-words bg-white border-1 rounded-md border shadow-md">
-
-                <form class="w-full px-6 space-y-6 sm:px-10 sm:space-y-8" method="POST" action="{{ route('login') }}">
-                    @csrf
-
-                    <div class="flex flex-wrap">
-                        <label for="email" class="block text-gray-700 text-sm font-bold mb-2 sm:mb-4">
-                            {{ __('auth.email') }}
-                        </label>
-
-                        <input id="email" type="email"
-                            class="border p-2 rounded form-input w-full hover:border-gray-300 focus:border-gray-500 transition-primary @error('email') border-red-500 @enderror" name="email"
-                            value="{{ old('email') }}" required autocomplete="email" autofocus>
-
-                        @error('email')
-                        <p class="text-red-500 text-xs italic mt-4">
-                            {{ $message }}
-                        </p>
-                        @enderror
-                    </div>
-
-                    <div class="flex flex-wrap">
-                        <label for="password" class="block text-gray-700 text-sm font-bold mb-2 sm:mb-4">
-                            {{ __('auth.password') }}
-                        </label>
-
-                        <input id="password" type="password"
-                            class="border p-2 rounded form-input w-full hover:border-gray-300 focus:border-gray-500 transition-primary @error('password') border-red-500 @enderror" name="password"
-                            required>
-
-                        @error('password')
-                        <p class="text-red-500 text-xs italic mt-4">
-                            {{ $message }}
-                        </p>
-                        @enderror
-                    </div>
-
-                    <div class="flex items-center">
-                        <label class="inline-flex items-center text-sm text-gray-700" for="remember">
-                            <input type="checkbox" name="remember" id="remember" class="form-checkbox"
-                                {{ old('remember') ? 'checked' : '' }}>
-                            <span class="ml-2">{{ __('auth.rememberme') }}</span>
-                        </label>
-
-                        @if (Route::has('password.request'))
-                        <a class="text-sm text-primary-500 hover:text-primary-600 whitespace-no-wrap no-underline hover:underline ml-auto"
-                            href="{{ route('password.request') }}">
-                            {{ __('auth.forgotpassword') }}
+<div class="mx-auto max-w-lg">
+    <div class="w-full">
+        <div class="flex flex-col break-words bg-white border-1 rounded-md">
+            <x-form.form action="{{ route('login') }}" class="w-full px-6 space-y-6 sm:px-10 sm:space-y-8">
+                <x-form.input type="email" name="email" label="{{ __('auth.email') }}">
+                </x-form.input>
+                <x-form.input type="password" name="password" label="{{ __('auth.password') }}">
+                </x-form.input>
+                <div>
+                    <label class="inline-flex items-center" for="remember">
+                        <input type="checkbox" name="remember" id="remember" class="form-checkbox"
+                            {{ old('remember') ? 'checked' : '' }}>
+                        <span class="ml-2">{{ __('auth.rememberme') }}</span>
+                    </label>
+                    @if (Route::has('password.request'))
+                    <a class="text-sm text-primary-500 hover:text-primary-600 whitespace-no-wrap no-underline hover:underline ml-auto"
+                        href="{{ route('password.request') }}">
+                        {{ __('auth.forgotpassword') }}
+                    </a>
+                    @endif
+                </div>
+                <x-form.submit>{{ __('auth.login') }}</x-form.submit>
+                <div>
+                    @if (Route::has('register'))
+                    <p class="text-center my-6">
+                        {{ __('auth.donthaveanaccount') }}
+                        <a class="text-primary hover:text-primary-shade no-underline hover:underline" href="{{ route('register') }}">
+                            {{ __('auth.register') }}
                         </a>
-                        @endif
-                    </div>
-
-                    <div class="flex flex-wrap">
-                        <button type="submit"
-                        class="w-full select-none font-bold whitespace-no-wrap p-3 rounded text-base leading-normal no-underline transition-primary text-white bg-primary-500 hover:bg-primary-600 sm:py-3">
-                            {{ __('auth.login') }}
-                        </button>
-
-                        @if (Route::has('register'))
-                        <p class="w-full text-xs text-center text-gray-700 my-6 sm:text-sm sm:my-8">
-                            {{ __('auth.donthaveanaccount') }}
-                            <a class="text-primary hover:text-primary-shade no-underline hover:underline" href="{{ route('register') }}">
-                                {{ __('auth.register') }}
-                            </a>
-                        </p>
-                        @endif
-                    </div>
-                </form>
-
-            </section>
+                    </p>
+                    @endif
+                </div>
+            </x-form.form>
         </div>
     </div>
 </div>
