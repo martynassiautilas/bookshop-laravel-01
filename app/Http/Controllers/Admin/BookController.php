@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\Models\Book;
+use Image;
 
 class BookController extends Controller
 {
@@ -40,14 +41,33 @@ class BookController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255',
+            'cover' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        // Kol kas paliekam taip, taciau patikimai neatrodo.
-        // Reiktu detaliau pasizet pati metoda. Logiskai turetu but, jog nufiltruoja visus ir palieka tik whiteliste esancius.
-        // Kas butu, jeigu $requeste butu 1mln laukeliu, ar visus taip ir tikrintu? Ar tai gali itakoti serverio darba ir pan.
-        Book::create($request->all());
+        if ($request->hasFile('cover')) {
+            if ($request->file('cover')->isValid()) {
+                $cover = $request->file('cover');
+                $saveAs = 'jpg';
+                $coverFileName = time().'.'.$saveAs;
+                $destinationPath = public_path('/covers');
+                $coverImage = Image::make($cover->path());
+                $coverImage->resize(640, 640, function ($constraint) {
+                    $constraint->aspectRatio();
+                });
+                $coverImage->save($destinationPath.'/'.$coverFileName, 90);
+            }
+        }
 
-        return redirect()->route('admin.dashboard')
+        Book::create(
+            // Remove file from $request and replace it with file name only.
+            array_merge(
+                $request->except(["cover"]),
+                array("cover" => $coverFileName)
+            )
+        );
+
+
+        return redirect()->route('admin.book.create')
             ->with('success', 'Knyga prideta sekmingai');
     }
 

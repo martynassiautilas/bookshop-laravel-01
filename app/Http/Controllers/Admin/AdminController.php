@@ -15,8 +15,6 @@ class AdminController extends Controller
      */
     public function dashboard()
     {
-        return auth()->user();
-        dd();
         return view('pages.admin.dashboard');
     }
 
