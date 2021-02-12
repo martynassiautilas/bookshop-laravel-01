@@ -9,13 +9,13 @@ use Illuminate\Support\Facades\Auth;
 class AdminController extends Controller
 {
     /**
-     * Set the home page.
+     * Set the dashboard.
      *
      * @return \Illuminate\View\View
      */
     public function dashboard()
     {
-        return 'sveiki';
-        // return Auth::user()->isAdmin();
+        dd(today());
+        return view('pages.admin.dashboard');
     }
 }
