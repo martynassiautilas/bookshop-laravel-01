@@ -37,4 +37,13 @@ class Book extends Model
         'discount' => 'integer',
         'price' => 'decimal:8,2'
     ];
+
+    /**
+     * The genres that belong to the book.
+     */
+    public function genres()
+    {
+        return $this->belongsToMany(Genre::class)->withTimestamps();
+    }
+
 }

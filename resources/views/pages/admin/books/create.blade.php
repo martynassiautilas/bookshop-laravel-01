@@ -11,8 +11,11 @@
             <x-form.input type="file" name="cover" label="Knygos virselis"/>
             <x-form.input type="text" name="price" label="Kaina"/>
             <x-form.input type="text" name="discount" label="Nuolaida"/>
+            <x-form.multiselect name="genre" :options='$genres' label="Knygos zanras"/>
             <x-form.submit>Pridėti</x-form.submit>
         </x-form.form>
+
+
     </div>
 </div>
 @endsection

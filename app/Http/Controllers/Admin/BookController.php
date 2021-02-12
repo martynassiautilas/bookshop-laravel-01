@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\Models\Book;
+use App\Models\Genre;
 use Image;
 
 class BookController extends Controller
@@ -28,7 +29,11 @@ class BookController extends Controller
      */
     public function create()
     {
-        return view('pages.admin.books.create');
+        $data['genres'] = Genre::select('id', 'name')->get()->pluck('name', 'id')->toArray();
+        
+        // Cia reiktu tikrinimo, o kas jeigu nera zanru db? Taciau veliau
+
+        return view('pages.admin.books.create', $data);
     }
 
     /**
@@ -43,10 +48,12 @@ class BookController extends Controller
             'title' => 'required|string|max:255',
             'cover' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'price' => 'required|numeric',
-            'discount' => 'required|integer|between:0,100'
+            'discount' => 'required|integer|between:0,100',
+            'genre' => 'required|string'
         ]);
 
-        if ($request->hasFile('cover')) {
+        if ($request->hasFile('cover')) 
+        {
             if ($request->file('cover')->isValid()) {
                 $cover = $request->file('cover');
                 $saveAs = 'jpg';
@@ -60,13 +67,26 @@ class BookController extends Controller
             }
         }
 
-        Book::create(
+        $book = Book::create(
             // Remove file from $request and replace it with file name only.
             array_merge(
-                $request->except(["cover"]),
-                array("cover" => $coverFileName)
+                $request->except(['cover', 'genres']),
+                array('cover' => $coverFileName)
             )
         );
+
+        if ($request->has('genre')) 
+        {
+            $genreString = $request->input('genre');
+            $genres = explode(',', $genreString);
+
+            // Cia reiktu tikrinimo, o kas jeigu negrazina reiksmes (jog sistema grazintu klaida)
+            $genresCount = count($genres);
+            for($i=0; $i < $genresCount; $i++)
+            {
+                $book->genres()->attach($genres[$i]);
+            }
+        } 
 
         return redirect()->route('admin.book.create')
             ->with('success', 'Knyga prideta sekmingai');
