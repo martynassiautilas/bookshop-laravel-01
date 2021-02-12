@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 
 use App\Models\Book;
 use App\Models\Genre;
+use App\Models\Author;
+
 use Image;
 
 class BookController extends Controller
@@ -30,7 +32,8 @@ class BookController extends Controller
     public function create()
     {
         $data['genres'] = Genre::select('id', 'name')->get()->pluck('name', 'id')->toArray();
-        
+        $data['authors'] = Author::select('id', 'name')->get()->pluck('name', 'id')->toArray();
+
         // Cia reiktu tikrinimo, o kas jeigu nera zanru db? Taciau veliau
 
         return view('pages.admin.books.create', $data);
@@ -49,7 +52,8 @@ class BookController extends Controller
             'cover' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'price' => 'required|numeric',
             'discount' => 'required|integer|between:0,100',
-            'genre' => 'required|string'
+            'genre' => 'required|array',
+            'author' => 'required|array',
         ]);
 
         if ($request->hasFile('cover')) 
@@ -77,14 +81,23 @@ class BookController extends Controller
 
         if ($request->has('genre')) 
         {
-            $genreString = $request->input('genre');
-            $genres = explode(',', $genreString);
-
+            $genres= $request->input('genre');
             // Cia reiktu tikrinimo, o kas jeigu negrazina reiksmes (jog sistema grazintu klaida)
             $genresCount = count($genres);
             for($i=0; $i < $genresCount; $i++)
             {
                 $book->genres()->attach($genres[$i]);
+            }
+        } 
+
+        // Repeating?
+        if ($request->has('author')) 
+        {
+            $authors = $request->input('author');
+            $authorsCount = count($authors);
+            for($i=0; $i < $authorsCount; $i++)
+            {
+                $book->authors()->attach($authors[$i]);
             }
         } 
 
