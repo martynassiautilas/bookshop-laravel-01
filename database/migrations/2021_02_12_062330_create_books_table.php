@@ -17,7 +17,8 @@ class CreateBooksTable extends Migration
             $table->id();
             $table->string('title');
             $table->string('cover')->nullable();
-
+            $table->text('description')->nullable();
+            
             // 0-255
             $table->unsignedTinyInteger('discount')->nullable()->default(0);
             

@@ -42,6 +42,8 @@ class BookController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'cover' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'price' => 'required|numeric',
+            'discount' => 'required|integer|between:0,100'
         ]);
 
         if ($request->hasFile('cover')) {
@@ -65,7 +67,6 @@ class BookController extends Controller
                 array("cover" => $coverFileName)
             )
         );
-
 
         return redirect()->route('admin.book.create')
             ->with('success', 'Knyga prideta sekmingai');
