@@ -17,7 +17,3 @@ use App\Http\Controllers\MainController;
 use App\Http\Controllers\BookController;
 
 Route::get('/', [MainController::class, 'homePage'])->name('homePage');
-
-Route::middleware(['auth'])->group(function () {
-    Route::get('/add-book', [BookController::class, 'addBook'])->name('addBook');
-});

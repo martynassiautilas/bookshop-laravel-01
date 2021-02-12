@@ -13,10 +13,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\BookController;
 
 Route::get('/', [AdminController::class, 'dashboard'])->name('dashboard');
 
-// Route::middleware(['auth'])->group(function () {
-//     Route::get('/add-book', [BookController::class, 'addBook'])->name('addBook');
-// });
+Route::resource('book', BookController::class);

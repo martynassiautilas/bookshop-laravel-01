@@ -46,7 +46,7 @@
                     <a href="#"
                         class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-500 hover:text-white">Mano
                         profilis</a>
-                    <a href="{{ route('addBook') }}"
+                    <a
                         class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-500 hover:text-white">Pridėti
                         knygą</a>
                     <a href="#"

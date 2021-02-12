@@ -8,13 +8,4 @@ use App\Http\Controllers\Controller;
 
 class BookController extends Controller
 {
-    /**
-     * Set book add page.
-     *
-     * @return \Illuminate\View\View
-     */
-    public function addBook()
-    {
-        return view('book.add');
-    }
 }
