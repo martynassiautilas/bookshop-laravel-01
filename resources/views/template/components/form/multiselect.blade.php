@@ -3,9 +3,10 @@
         {{$label}}
     </x-form.label>
 
+    {{-- {{ isset($selected[$optionValue]) ? 'selected="selected"' : '' }}  --}}
     <select name="{{$name}}" multiple="multiple">
       @foreach($options as $optionValue => $optionName)
-      <option value="{{ $optionValue }}">{{ $optionName }}</option>
+        <option value="{{ $optionValue }}">{{ $optionName }}</option>
       @endforeach
     </select>
 

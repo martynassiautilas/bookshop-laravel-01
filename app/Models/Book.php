@@ -37,7 +37,7 @@ class Book extends Model
      */
     protected $casts = [
         'discount' => 'integer',
-        'price' => 'decimal:8,2'
+        // 'price' => 'decimal:8,2'
     ];
 
     /**

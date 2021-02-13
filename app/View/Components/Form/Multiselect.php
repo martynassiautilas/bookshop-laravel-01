@@ -10,6 +10,7 @@ class Multiselect extends Component
     public string $name;
     public string $label;
     public array $options;
+    public array $selected;
 
     /**
      * Create a new component instance.
@@ -17,11 +18,12 @@ class Multiselect extends Component
      * @param $method
      * @return void
      */
-    public function __construct(array $options = array(), string $label = '', string $name)
+    public function __construct(array $options = array(), string $label = '', string $name, array $selected = array())
     {
         $this->options = $options;
         $this->name = $name;
         $this->label = $label;
+        $this->selected = $selected;
     }
 
     /**

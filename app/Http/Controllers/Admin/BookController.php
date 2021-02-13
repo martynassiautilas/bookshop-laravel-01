@@ -32,13 +32,33 @@ class BookController extends Controller
      */
     public function create()
     {
-        $data['genres'] = Genre::select('id', 'name')->get()->pluck('name', 'id')->toArray();
-        $data['authors'] = Author::select('id', 'name')->get()->pluck('name', 'id')->toArray();
+        $data['genres'] = Genre::select('id', 'name')->get()->toArray();
+        $data['authors'] = Author::select('id', 'name')->get()->toArray();
         // Cia reiktu tikrinimo, o kas jeigu nera zanru db? Taciau veliau
 
         return view('pages.admin.books.create', $data);
     }
 
+
+    public function edit($id)
+    {
+        // Repeating from create(). Need fix
+        $data['genres'] = Genre::select('id', 'name')->get()->toArray();
+        $data['authors'] = Author::select('id', 'name')->get()->toArray();
+        
+
+
+        $book = Book::with('authors:id', 'genres:id')->find($id);
+        $data['preselectGenres'] = $book->genres->pluck('id')->toArray();
+        // $data['preselectAuthors'] = $book->authors->pluck('id')->toArray();
+    
+        // Optimization?
+        // $book->unsetRelation('genres')->unsetRelation('authors');
+        $data['book'] = $book;
+
+        return view('pages.admin.books.create', $data);
+    }
+    
     /**
      * Store a newly created resource in storage.
      *
@@ -52,10 +72,12 @@ class BookController extends Controller
             'cover' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'price' => 'required|numeric',
             'discount' => 'required|integer|between:0,100',
-            'genre' => 'required|array',
-            'author' => 'required|array',
+            'genres' => 'required|string',
+            'authors' => 'required|string',
         ]);
 
+
+        // Cia turetu buti globali funkcija 
         if ($request->hasFile('cover')) 
         {
             if ($request->file('cover')->isValid()) {
@@ -74,14 +96,15 @@ class BookController extends Controller
         $book = Book::create(
             // Remove file from $request and replace it with file name only.
             array_merge(
-                $request->except(['cover', 'genres']),
+                $request->except(['cover', 'genres', 'authors']),
                 array('cover' => $coverFileName)
             )
         );
 
-        if ($request->has('genre')) 
+        if ($request->has('genres')) 
         {
-            $genres= $request->input('genre');
+            $genresString = $request->input('genres');
+            $genres = explode(',', $genresString);
             // Cia reiktu tikrinimo, o kas jeigu negrazina reiksmes (jog sistema grazintu klaida)
             $genresCount = count($genres);
             for($i=0; $i < $genresCount; $i++)
@@ -91,9 +114,11 @@ class BookController extends Controller
         } 
         
         // Repeating?
-        if ($request->has('author')) 
+        if ($request->has('authors')) 
         {
-            $authors = $request->input('author');
+            $authorsString = $request->input('authors');
+            $authors = explode(',', $authorsString);
+
             $authorsCount = count($authors);
             for($i=0; $i < $authorsCount; $i++)
             {
