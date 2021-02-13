@@ -12,7 +12,7 @@
     @remove="removeFromHiddenInput"
     track-by="id">
     </multiselect>
-    <input type="text" v-model="selectedValues" :name="name">
+    <input type="hidden" v-model="selectedValues" :name="name">
   </div>
 </template>
 

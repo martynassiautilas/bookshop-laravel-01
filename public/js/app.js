@@ -19882,7 +19882,7 @@ var render = function() {
             expression: "selectedValues"
           }
         ],
-        attrs: { type: "text", name: _vm.name },
+        attrs: { type: "hidden", name: _vm.name },
         domProps: { value: _vm.selectedValues },
         on: {
           input: function($event) {

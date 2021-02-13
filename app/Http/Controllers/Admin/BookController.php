@@ -50,10 +50,10 @@ class BookController extends Controller
 
         $book = Book::with('authors:id', 'genres:id')->find($id);
         $data['preselectGenres'] = $book->genres->pluck('id')->toArray();
-        // $data['preselectAuthors'] = $book->authors->pluck('id')->toArray();
+        $data['preselectAuthors'] = $book->authors->pluck('id')->toArray();
     
         // Optimization?
-        // $book->unsetRelation('genres')->unsetRelation('authors');
+        $book->unsetRelation('genres')->unsetRelation('authors');
         $data['book'] = $book;
 
         return view('pages.admin.books.create', $data);

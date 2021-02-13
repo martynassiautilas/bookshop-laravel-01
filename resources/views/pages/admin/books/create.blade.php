@@ -17,12 +17,9 @@
             <x-form.input type="file" name="cover" label="Knygos virselis"/>
             <x-form.input type="text" name="price" value="{{ isset($book) ? $book->price : '' }}" label="Kaina"/>
             <x-form.input type="text" name="discount" value="{{ isset($book) ? $book->discount : '' }}" label="Nuolaida"/>
-            <multiselect-component :preselect="{{ json_encode($preselectGenres) }}" name="genres" :options="{{ json_encode($genres) }}"></multiselect-component>
-            <multiselect-component name="authors" :options="{{ json_encode($authors) }}"></multiselect-component>
-            {{-- <x-form.multiselect name="genre[]" :options="$genres" selected="{!! isset($book) ? $selectedGenres : '' !!}" label="Knygos zanras"/> --}}
-            {{-- <x-form.multiselect name="author[]" :options="$authors" label="Knygos autorius"/> --}}
+            <multiselect-component :preselect="{{ isset($book) ? json_encode($preselectGenres) : 'null' }}" name="genres" :options="{{ json_encode($genres) }}"></multiselect-component>
+            <multiselect-component :preselect="{{ isset($book) ? json_encode($preselectAuthors) : 'null' }}" name="authors" :options="{{ json_encode($authors) }}"></multiselect-component>
             <x-form.submit>Pridėti</x-form.submit>
-            
         </x-form.form>
     </div>
 </div>
