@@ -1,5 +1,5 @@
 @extends('template.layout.base')
 
 @section('content')
-Here will go some main status
+<a href="{{ route('admin.book.index') }}">Knygu valdymas</a>
 @endsection

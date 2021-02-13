@@ -16,4 +16,4 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\BookController;
 
-Route::get('/', [MainController::class, 'homePage'])->name('homePage');
+Route::get('/', [MainController::class, 'homePage'])->name('home.page');

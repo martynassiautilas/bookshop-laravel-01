@@ -9,6 +9,8 @@ class Book extends Model
 {
     use HasFactory;
 
+    protected $hidden = ['pivot'];
+
     /**
      * Table name
      *

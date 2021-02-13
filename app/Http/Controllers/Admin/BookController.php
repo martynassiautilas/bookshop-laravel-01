@@ -21,7 +21,8 @@ class BookController extends Controller
      */
     public function index()
     {
-        return 'list';
+        $data['books'] = Book::select('id', 'title')->with('authors:id,name')->get();
+        return view('pages.admin.books.index', $data);
     }
 
     /**
@@ -33,7 +34,6 @@ class BookController extends Controller
     {
         $data['genres'] = Genre::select('id', 'name')->get()->pluck('name', 'id')->toArray();
         $data['authors'] = Author::select('id', 'name')->get()->pluck('name', 'id')->toArray();
-
         // Cia reiktu tikrinimo, o kas jeigu nera zanru db? Taciau veliau
 
         return view('pages.admin.books.create', $data);
@@ -89,7 +89,7 @@ class BookController extends Controller
                 $book->genres()->attach($genres[$i]);
             }
         } 
-
+        
         // Repeating?
         if ($request->has('author')) 
         {

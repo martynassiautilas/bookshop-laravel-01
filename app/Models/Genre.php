@@ -9,6 +9,8 @@ class Genre extends Model
 {
     use HasFactory;
 
+    protected $hidden = ['pivot'];
+
    /**
      * The attributes that are mass assignable.
      *
