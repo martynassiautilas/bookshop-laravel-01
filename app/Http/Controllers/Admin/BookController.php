@@ -45,9 +45,7 @@ class BookController extends Controller
         // Repeating from create(). Need fix
         $data['genres'] = Genre::select('id', 'name')->get()->toArray();
         $data['authors'] = Author::select('id', 'name')->get()->toArray();
-        
-
-
+    
         $book = Book::with('authors:id', 'genres:id')->find($id);
         $data['preselectGenres'] = $book->genres->pluck('id')->toArray();
         $data['preselectAuthors'] = $book->authors->pluck('id')->toArray();
@@ -128,6 +126,64 @@ class BookController extends Controller
 
         return redirect()->route('admin.book.create')
             ->with('success', 'Knyga prideta sekmingai');
+    }
+
+     /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            // 'cover' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'price' => 'required|numeric',
+            'discount' => 'required|integer|between:0,100',
+            'genres' => 'required|string',
+            'authors' => 'required|string',
+        ]);
+
+        $coverFileName = '123';
+
+        $book = Book::find($id);
+        $book->update(
+            array_merge(
+                $request->except(['cover', 'genres', 'authors']),
+                array('cover' => $coverFileName)
+            )
+        );
+
+        if ($request->has('genres')) 
+        {
+            $genresString = $request->input('genres');
+            $genres = explode(',', $genresString);
+            $book->genres()->sync($genres);
+        } 
+        
+        if ($request->has('authors')) 
+        {
+            $authorsString = $request->input('authors');
+            $authors = explode(',', $authorsString);
+            $book->authors()->sync($authors);
+        } 
+
+        return redirect()->route('admin.book.index')
+            ->with('success', 'Knyga atnaujinta sekmingai');
+
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        //
     }
 
 }

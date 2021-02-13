@@ -12,7 +12,7 @@
             @endif
         </div>
 
-        <x-form.form action="{{ route('admin.book.store') }}" enctype="multipart/form-data">
+        <x-form.form method="{{ isset($book) ? 'PATCH' : 'POST' }}" action="{{ isset($book) ? route('admin.book.update', $book->id) : route('admin.book.store') }}" enctype="multipart/form-data">
             <x-form.input type="text" name="title" value="{{ isset($book) ? $book->title : '' }}" label="Knygos pavadinimas"/>
             <x-form.input type="file" name="cover" label="Knygos virselis"/>
             <x-form.input type="text" name="price" value="{{ isset($book) ? $book->price : '' }}" label="Kaina"/>
