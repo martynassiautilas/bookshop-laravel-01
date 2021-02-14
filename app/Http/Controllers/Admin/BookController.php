@@ -5,14 +5,20 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+use Image;
+
 use App\Models\Book;
 use App\Models\Genre;
 use App\Models\Author;
 
-use Image;
+use App\Traits\BookTrait;
+
+use App\Http\Requests\BookStoreRequest;
 
 class BookController extends Controller
 {
+
+    use BookTrait;
 
     /**
      * Display a listing of the resource.
@@ -32,19 +38,14 @@ class BookController extends Controller
      */
     public function create()
     {
-        $data['genres'] = Genre::select('id', 'name')->get()->toArray();
-        $data['authors'] = Author::select('id', 'name')->get()->toArray();
-        // Cia reiktu tikrinimo, o kas jeigu nera zanru db? Taciau veliau
-
+        $data = $this->getAllGenresAuthors();
         return view('pages.admin.books.create', $data);
     }
 
 
     public function edit($id)
     {
-        // Repeating from create(). Need fix
-        $data['genres'] = Genre::select('id', 'name')->get()->toArray();
-        $data['authors'] = Author::select('id', 'name')->get()->toArray();
+        $data = $this->getAllGenresAuthors();
     
         $book = Book::with('authors:id', 'genres:id')->find($id);
         $data['preselectGenres'] = $book->genres->pluck('id')->toArray();
@@ -63,32 +64,12 @@ class BookController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(BookStoreRequest $request)
     {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'cover' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'price' => 'required|numeric',
-            'discount' => 'required|integer|between:0,100',
-            'genres' => 'required|string',
-            'authors' => 'required|string',
-        ]);
 
-
-        // Cia turetu buti globali funkcija 
-        if ($request->hasFile('cover')) 
+        if ($request->hasFile('cover') && $request->file('cover')->isValid()) 
         {
-            if ($request->file('cover')->isValid()) {
-                $cover = $request->file('cover');
-                $saveAs = 'jpg';
-                $coverFileName = time().'.'.$saveAs;
-                $destinationPath = public_path('/covers');
-                $coverImage = Image::make($cover->path());
-                $coverImage->resize(640, 640, function ($constraint) {
-                    $constraint->aspectRatio();
-                });
-                $coverImage->save($destinationPath.'/'.$coverFileName, 90);
-            }
+            $coverFileName = $this->coverUpload($request->file('cover'));
         }
 
         $book = Book::create(
@@ -135,18 +116,24 @@ class BookController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(BookStoreRequest $request, $id)
     {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            // 'cover' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'price' => 'required|numeric',
-            'discount' => 'required|integer|between:0,100',
-            'genres' => 'required|string',
-            'authors' => 'required|string',
-        ]);
 
-        $coverFileName = '123';
+        // Cia turetu buti globali funkcija 
+        if ($request->hasFile('cover')) 
+        {
+            if ($request->file('cover')->isValid()) {
+                $cover = $request->file('cover');
+                $saveAs = 'jpg';
+                $coverFileName = time().'.'.$saveAs;
+                $destinationPath = public_path('/covers');
+                $coverImage = Image::make($cover->path());
+                $coverImage->resize(640, 640, function ($constraint) {
+                    $constraint->aspectRatio();
+                });
+                $coverImage->save($destinationPath.'/'.$coverFileName, 90);
+            }
+        }
 
         $book = Book::find($id);
         $book->update(
