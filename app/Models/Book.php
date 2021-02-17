@@ -28,6 +28,7 @@ class Book extends Model
         'cover',
         'discount',
         'price',
+        'user_id',
     ];
 
     /**
@@ -36,7 +37,7 @@ class Book extends Model
      * @var array
      */
     protected $casts = [
-        'discount' => 'integer',
+        // 'discount' => 'integer',
         // 'price' => 'decimal:8,2'
     ];
 
@@ -55,5 +56,13 @@ class Book extends Model
     {
         return $this->belongsToMany(Author::class)->withTimestamps();
     }
+
+    // /**
+    //  * The user that created record about a book.
+    //  */
+    // public function createdBy()
+    // {
+    //     return $this->belongsTo(User::class);
+    // }
 
 }

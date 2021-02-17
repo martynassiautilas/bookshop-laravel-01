@@ -1,4 +1,4 @@
-<header class="bg-white flex justify-between items-center p-6">
+<header class="bg-white flex justify-between items-center p-4 top-bar">
     <div class="flex items-center space-x-4">
         <button @click="sidebarOpen = true" class="text-gray-500 dark:text-gray-300 focus:outline-none">
             <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -9,7 +9,7 @@
         <div>
             <a href="{{ url('/') }}" class="">
                 <img src="{{ asset('images/logo-color.svg') }}"
-                    class="h-16 sm:w-16 lg:w-auto object-cover object-left">
+                    class="h-12 sm:w-12 lg:w-auto object-cover object-left">
             </a>
         </div>
     </div>

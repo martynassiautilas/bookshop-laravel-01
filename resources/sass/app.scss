@@ -4,7 +4,8 @@
 
 body {
     font-family: 'Open Sans', sans-serif;
-    @apply text-gray-800 bg-gray-100;
+    @apply text-gray-800 text-sm;
+    background-color: #f1f6fb;
 }
 
 a {
@@ -12,6 +13,10 @@ a {
     &:hover {
         @apply underline;
     }
+}
+
+.top-bar {
+    box-shadow: 0 3px 15px rgba(0,0,0,.07058823529411765);
 }
 
 .font-heading {
@@ -28,7 +33,7 @@ strong, elem, .font-bold {
 
 .button {
     @extend .transition-primary;
-    @apply text-base border-2 rounded p-2 font-bold;
+    @apply border-2 rounded p-2 font-bold;
     &:hover {
         text-decoration: none;
     }

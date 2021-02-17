@@ -15,7 +15,10 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\BookController;
+use App\Http\Controllers\Admin\UserController;
+
 
 Route::get('/', [AdminController::class, 'dashboard'])->name('dashboard');
 
 Route::resource('book', BookController::class);
+Route::resource('user', UserController::class);

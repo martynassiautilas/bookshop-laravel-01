@@ -5,15 +5,14 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-use Image;
-
 use App\Models\Book;
 use App\Models\Genre;
 use App\Models\Author;
 
 use App\Traits\BookTrait;
 
-use App\Http\Requests\BookStoreRequest;
+use App\Http\Requests\Books\BookStoreRequest;
+use App\Http\Requests\Books\BookUpdateRequest;
 
 class BookController extends Controller
 {
@@ -27,8 +26,8 @@ class BookController extends Controller
      */
     public function index()
     {
-        $data['books'] = Book::select('id', 'title')->with('authors:id,name')->get();
-        return view('pages.admin.books.index', $data);
+        $books = Book::select('id', 'title')->with('authors:id,name')->get();
+        return view('pages.admin.books.index')->with('books', $books);
     }
 
     /**
@@ -38,24 +37,33 @@ class BookController extends Controller
      */
     public function create()
     {
-        $data = $this->getAllGenresAuthors();
+        $data = $this->getAllGenresAuthors(true);
+
+        // This will help to pass preselect values for vue multiselect component.
+        $data = array_merge($data, $this->fixGenresAuthorsOldValues());
+
         return view('pages.admin.books.create', $data);
     }
 
 
     public function edit($id)
     {
-        $data = $this->getAllGenresAuthors();
-    
+        $data = $this->getAllGenresAuthors(true);
         $book = Book::with('authors:id', 'genres:id')->find($id);
-        $data['preselectGenres'] = $book->genres->pluck('id')->toArray();
-        $data['preselectAuthors'] = $book->authors->pluck('id')->toArray();
+
+        // This will help to pass preselected values for vue multiselect component.
+        $data['preselectGenres'] = json_encode($book->genres->pluck('id')->toArray());
+        $data['preselectAuthors'] = json_encode($book->authors->pluck('id')->toArray());
     
-        // Optimization?
+        // We don't need pass data, that we don't use.
         $book->unsetRelation('genres')->unsetRelation('authors');
+        
         $data['book'] = $book;
 
-        return view('pages.admin.books.create', $data);
+        // This will help to pass preselected old values for vue multiselect component.
+        $data = array_merge($data, $this->fixGenresAuthorsOldValues());
+
+        return view('pages.admin.books.edit', $data);
     }
     
     /**
@@ -66,46 +74,22 @@ class BookController extends Controller
      */
     public function store(BookStoreRequest $request)
     {
-
-        if ($request->hasFile('cover') && $request->file('cover')->isValid()) 
-        {
-            $coverFileName = $this->coverUpload($request->file('cover'));
-        }
+        $coverFileName = $this->coverUpload($request->file('cover'));
 
         $book = Book::create(
-            // Remove file from $request and replace it with file name only.
             array_merge(
                 $request->except(['cover', 'genres', 'authors']),
                 array('cover' => $coverFileName)
             )
         );
 
-        if ($request->has('genres')) 
-        {
-            $genresString = $request->input('genres');
-            $genres = explode(',', $genresString);
-            // Cia reiktu tikrinimo, o kas jeigu negrazina reiksmes (jog sistema grazintu klaida)
-            $genresCount = count($genres);
-            for($i=0; $i < $genresCount; $i++)
-            {
-                $book->genres()->attach($genres[$i]);
-            }
-        } 
-        
-        // Repeating?
-        if ($request->has('authors')) 
-        {
-            $authorsString = $request->input('authors');
-            $authors = explode(',', $authorsString);
+        $genres = explode(',', $request->input('genres'));
+        $book->genres()->attach($genres);
 
-            $authorsCount = count($authors);
-            for($i=0; $i < $authorsCount; $i++)
-            {
-                $book->authors()->attach($authors[$i]);
-            }
-        } 
+        $authors = explode(',', $request->input('authors'));
+        $book->authors()->attach($authors);
 
-        return redirect()->route('admin.book.create')
+        return redirect()->route('admin.book.index')
             ->with('success', 'Knyga prideta sekmingai');
     }
 
@@ -116,46 +100,24 @@ class BookController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(BookStoreRequest $request, $id)
+    public function update(BookUpdateRequest $request, $id)
     {
+        $book = Book::find($id);
+        $updateData = $request->except(['cover', 'genres', 'authors']);
 
-        // Cia turetu buti globali funkcija 
-        if ($request->hasFile('cover')) 
-        {
-            if ($request->file('cover')->isValid()) {
-                $cover = $request->file('cover');
-                $saveAs = 'jpg';
-                $coverFileName = time().'.'.$saveAs;
-                $destinationPath = public_path('/covers');
-                $coverImage = Image::make($cover->path());
-                $coverImage->resize(640, 640, function ($constraint) {
-                    $constraint->aspectRatio();
-                });
-                $coverImage->save($destinationPath.'/'.$coverFileName, 90);
-            }
+        if($request->hasFile('cover')) 
+        { 
+            $coverFileName = $this->coverUpload($request->file('cover'), $book->cover);
+            $updateData = array_merge($updateData, ['cover' => $coverFileName]);
         }
 
-        $book = Book::find($id);
-        $book->update(
-            array_merge(
-                $request->except(['cover', 'genres', 'authors']),
-                array('cover' => $coverFileName)
-            )
-        );
+        $book->update($updateData);
 
-        if ($request->has('genres')) 
-        {
-            $genresString = $request->input('genres');
-            $genres = explode(',', $genresString);
-            $book->genres()->sync($genres);
-        } 
-        
-        if ($request->has('authors')) 
-        {
-            $authorsString = $request->input('authors');
-            $authors = explode(',', $authorsString);
-            $book->authors()->sync($authors);
-        } 
+        $genres = explode(',', $request->input('genres'));
+        $book->genres()->sync($genres);
+
+        $authors = explode(',', $request->input('authors'));
+        $book->authors()->sync($authors);
 
         return redirect()->route('admin.book.index')
             ->with('success', 'Knyga atnaujinta sekmingai');
@@ -170,7 +132,11 @@ class BookController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $book = Book::find($id);
+        $this->coverFileDelete($book->cover);
+        $book->genres()->sync([]);
+        $book->authors()->sync([]);
+        $book->delete();
     }
 
 }

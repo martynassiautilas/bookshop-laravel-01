@@ -18,12 +18,14 @@ class CreateBooksTable extends Migration
             $table->string('title');
             $table->string('cover')->nullable();
             $table->text('description')->nullable();
-            
+            $table->foreignId('user_id')->constrained();
+
             // 0-255
             $table->unsignedTinyInteger('discount')->nullable()->default(0);
             
-            // Should be enough for now? 123456.78
-            $table->decimal('price', 8, 2)->nullable()->default(0);
+            // 0-4294967295
+            // https://www.red-gate.com/hub/product-learning/sql-prompt/the-dangers-of-using-float-or-real-datatypes
+            $table->unsignedInteger('price');
 
             $table->timestamps();
         });
